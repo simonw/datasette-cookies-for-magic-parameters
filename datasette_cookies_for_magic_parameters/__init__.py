@@ -80,7 +80,7 @@ def extra_body_script(template, database, request, datasette):
         ]
         if not cookie_params:
             return ""
-        return JS.replace("PARAMS", json.dumps(cookie_params))
+        return JS.replace("PARAMS", json.dumps(list(set(cookie_params))))
 
     return inner
 

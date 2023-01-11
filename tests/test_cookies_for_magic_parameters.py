@@ -30,3 +30,21 @@ async def test_javascript_present(path, expect_javascript, expected_status):
         assert "enhanceMagicParameterForm()" in response.text
     else:
         assert "enhanceMagicParameterForm()" not in response.text
+
+
+@pytest.mark.asyncio
+async def test_dedupe_multiple_uses_of_parameter():
+    sql = "select 'Your API key is:' || :_cookie_openai_api_token || ' and ' || :_cookie_openai_api_token"
+    datasette = Datasette(
+        memory=True,
+        metadata={
+            "databases": {
+                "_memory": {
+                    "queries": {"name": sql}
+                }
+            }
+        },
+    )
+    response = await datasette.client.get("/_memory/name")
+    assert response.status_code == 400
+    assert 'let params = ["openai_api_token"];' in response.text
