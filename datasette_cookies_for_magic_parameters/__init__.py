@@ -7,7 +7,8 @@ function enhanceMagicParameterForm() {
     let params = PARAMS;
     let form = document.querySelector('form.sql');
     let paramsWithValues = document.cookie.split(';').filter(cookie => {
-        return cookie.split('=')[1].replace(/"/g, '').trim()
+        let value = cookie.split('=')[1];
+        return value && value.replace(/"/g, '').trim()
     }).map(cookie => cookie.split('=')[0].trim());
     // Remove anything we added last time
     form.querySelectorAll('.magic-params').forEach(el => el.remove());
